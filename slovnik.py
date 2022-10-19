@@ -1,6 +1,6 @@
-version = "1.0.1"
+version = "1.0.2"
 
-slovnik = {
+philips = {
     "power_state" : { 
         "message_get" : {
             "get": "050100191D",

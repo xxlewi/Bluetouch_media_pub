@@ -1,9 +1,9 @@
-version = "1.0.1"
+version = "1.0.2"
 from tv import tv_ip
 from tv import tv_druh
 import os
 import sys
-from slovnik import slovnik
+from philips import philips
 
 
 # TODO Cold start, failover, change source, picture in picture, teplota bod 7,4, seriál number, tailing, lightsensor,
@@ -64,12 +64,12 @@ class Program:
         return stream.read()
 
     def tv_status_ip(self): # CMD directly to TV
-        stream = self.prikaz(slovnik["power_state"]["message_get"]["get"])
+        stream = self.prikaz(philips["power_state"]["message_get"]["get"])
         stream = stream.strip()
-        if stream == slovnik["power_state"]["message_get"]["report_on"] : 
+        if stream == philips["power_state"]["message_get"]["report_on"] : 
             print("Power is ON")
             return True
-        elif stream == slovnik["power_state"]["message_get"]["report_off"]:
+        elif stream == philips["power_state"]["message_get"]["report_off"]:
             print("Power is OFF")
             return False
         else:
@@ -81,24 +81,24 @@ class Program:
             pass
         else:
             print("Zapínám TV")
-            self.prikaz(slovnik["power_state"]["message_set"]["turn_on"])
+            self.prikaz(philips["power_state"]["message_set"]["turn_on"])
         
     def tv_off_ip(self):
         if self.tv_status_ip():
-            self.prikaz(slovnik["power_state"]["message_set"]["turn_off"])
+            self.prikaz(philips["power_state"]["message_set"]["turn_off"])
             print("Vypínám TV")
         else:
             print("Televize již byla vyppnutá")
             pass
 
     def tv_status_power_saving_mode(self): # CMD directly to TV
-        stream = self.prikaz(slovnik["power_saving_mode"]["message_get"]["get"])
+        stream = self.prikaz(philips["power_saving_mode"]["message_get"]["get"])
         print(stream)
         
-        # if stream == slovnik["power_state"]["message_get"]["report_on"] : 
+        # if stream == philips["power_state"]["message_get"]["report_on"] : 
         #     print("Power is ON")
         #     return True
-        # elif stream == slovnik["power_state"]["message_get"]["report_off"]:
+        # elif stream == philips["power_state"]["message_get"]["report_off"]:
         #     print("Power is OFF")
         #     return False
         # else:
@@ -123,6 +123,6 @@ if tv.cmd == "tv_on_ip":
     tv.tv_on_ip()
 if tv.cmd == "tv_off_ip":
     tv.tv_off_ip()
-if tv.cmd == "tv_status_power_saving_mode":
+if tv.cmd == "tv_power_saving_mode":
     tv.tv_status_power_saving_mode()
 
