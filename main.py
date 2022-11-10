@@ -1,16 +1,15 @@
-version = "1.0.2"
+version = "1.0.3"
 from tv import tv_ip
 from tv import tv_druh
 import os
 import sys
-from philips import philips
-
+from slovnik import philips
 
 # TODO Cold start, failover, change source, picture in picture, teplota bod 7,4, seriál number, tailing, lightsensor,
 # TODO humansensor, display rotation, dealy on start (tailing), factory reset, fan speed
 # TODO Screenshot, teamviewer (android only), RS232 routing, WOL, autorestart, HDMI (onewhire = CEC, timer, Multiwindow)
-# TODO
 
+# TODO rozdělení televizí podle vyrobce
 class Program:
     def __init__(self, tv_ip, tv_druh, cmd):
         self.tv_ip = tv_ip
@@ -48,7 +47,7 @@ class Program:
             stream2 = os.popen('tvservice -p')
             print(stream2.read())
 
-    def tv_off_hdmi(self):
+    def tv_off_hdmi(self): # vypni televizi ale nejdřív zkontroluj její stav
         if self.tv_status_hdmi():
             print("vypínám tv")
             stream2 = os.popen('tvservice -o')
@@ -59,6 +58,7 @@ class Program:
             pass
 
     ### Příkazy přímo do televize (IP)
+    
     def prikaz(self, cmd_p):
         stream = os.popen(f"echo '{cmd_p}'|xxd -r -p|nc -w 1 {self.tv_ip} 5000|xxd -ps")
         return stream.read()

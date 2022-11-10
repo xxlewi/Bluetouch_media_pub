@@ -1,7 +1,5 @@
 version = "1.0.0"
 from pexpect import pxssh
-import time
-
 
 seznam_objektu = []
 cesta_importovaneho_souboru = 'oc_haje.csv'
