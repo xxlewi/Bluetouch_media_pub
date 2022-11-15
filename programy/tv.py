@@ -1,6 +1,0 @@
-player_name = "PB2803"
-ip_adresa_player = "192.168.1.20"
-tv_name = "PHILIPS"
-ip_adresa_tv = "LGRDR_na_vysku"
-lokace = "Praha, Jihlavska 17"
-poznamka = ""
