@@ -1,14 +1,14 @@
-version = "1.1.0"
+version = "1.2.0"
 from tv import ip_adresa_tv
 from tv import tv_name
 import os
 import sys
 from slovnik import philips
 
-# TODO Cold start, failover, change source, picture in picture, teplota bod 7,4, seriál number, tailing, lightsensor,
+# TODO Cold start, failover, change source, picture in picture, teplota bod 7,4, serial number, tailing, lightsensor,
 # TODO humansensor, display rotation, dealy on start (tailing), factory reset, fan speed
 # TODO Screenshot, teamviewer (android only), RS232 routing, WOL, autorestart, HDMI (onewhire = CEC, timer, Multiwindow)
-# TODO rozdělení televizí podle vyrobce
+# TODO rozdeleni televiz podle vyrobce
 
 class Program:
     def __init__(self, ip_adresa_tv, tv_name, cmd):
@@ -16,10 +16,10 @@ class Program:
         self.tv_name = tv_name
         self.cmd = cmd
 
-    ### RPI příkazy napřímo po HDMI
+    ### RPI prikazy naprimo po HDMI
     def tv_status_hdmi(self): # On nebo Off (TV service)
         stream = os.popen('tvservice -s') #stav TV
-        self.out_tv_status_hdmi = stream.read() # Výstup ze stavu
+        self.out_tv_status_hdmi = stream.read() # Vystup ze stavu
         Off = ['0', 'x', '2']
         On = ['0', 'x', 'a']
         list = []
@@ -37,19 +37,19 @@ class Program:
         else:
             print(self.out_tv_status_hdmi)
 
-    def tv_on_hdmi(self): # zapni televizi ale nejdřív zkontroluj její stav
+    def tv_on_hdmi(self): # zapni televizi ale nejdriv zkontroluj jeji stav
         if self.tv_status_hdmi():
             print("pass")
             print(self.out_tv_status_hdmi)
             pass
         else:
-            print("zapínám tv")
+            print("zapinam tv")
             stream2 = os.popen('tvservice -p')
             print(stream2.read())
 
-    def tv_off_hdmi(self): # vypni televizi ale nejdřív zkontroluj její stav
+    def tv_off_hdmi(self): # vypni televizi ale nejdriv zkontroluj jeji stav
         if self.tv_status_hdmi():
-            print("vypínám tv")
+            print("vypinamm tv")
             stream2 = os.popen('tvservice -o')
             print(stream2.read())
         else:
@@ -57,10 +57,11 @@ class Program:
             print(self.out_tv_status_hdmi)
             pass
 
-    ### Příkazy přímo do televize (IP)
+    ### Prikazy primo do televize (IP)
     
     def prikaz(self, cmd_p):
-        stream = os.popen(f"echo '{cmd_p}'|xxd -r -p|nc -w 1 {self.ip_adresa_tv} 5000|xxd -ps")
+        stream_s = "echo " + cmd_p + " |xxd -r -p|nc -w 1 " + self.ip_adresa_tv + " 5000|xxd -ps"
+        stream = os.popen(stream_s)
         return stream.read()
 
     def tv_status_ip(self): # CMD directly to TV
@@ -73,7 +74,7 @@ class Program:
             print("Power is OFF")
             return False
         else:
-            print(f'chyba= {stream}')
+            print("chyba= " + stream)
 
     def tv_on_ip(self):
         if self.tv_status_ip():
@@ -113,8 +114,10 @@ command = str(sys.argv[1])
 
 tv = Program(ip_adresa_tv, tv_name, command) 
 
+print(tv.cmd)
+
 if tv.cmd == "?" or tv.cmd == "help" or tv.cmd == "h":
-    print(f"Příkazy:\ntv_on_hdmi\ntv_off_hdmi\ntv_on_ip\ntv_off_ip")
+    print("Prikazy: tv_on_hdmi tv_off_hdmi tv_on_ip tv_off_ip")
 if tv.cmd == "tv_on_hdmi":
     tv.tv_on_hdmi()
 if tv.cmd == "tv_off_hdmi":
@@ -126,5 +129,5 @@ if tv.cmd == "tv_off_ip":
 if tv.cmd == "tv_power_saving_mode":
     tv.tv_status_power_saving_mode()
     
-    #přidat lcd_conf
+    #pridat lcd_conf
 

@@ -1,5 +1,6 @@
-version = "1.1.0"
+version = "1.2.0"
 from pexpect import pxssh
+
 
 class Prikazy():
     def __init__(self, player_name, ip_adresa_player, tv_name, ip_adresa_tv, lokace, poznamka, 
@@ -139,26 +140,23 @@ class Program():
                     s.sendline("git clone https://github.com/xxlewi/Bluetouch_media_pub.git") # ok funguje
                     s.sendline("cd Bluetouch_media_pub/")
                     s.sendline("git pull")
-                    
-                    player_name = "player_name" + " = " + '"' + x.player_name + '"'
-                    ip_adresa_player = "ip_adresa_player" + " = " + '"' + x.ip_adresa_player + '"'
-                    tv_name = "tv_name" + " = " + '"' + x.tv_name + '"'
-                    ip_adresa_tv = "ip_adresa_tv" + " = " + '"' + x.ip_adresa_tv + '"'
-                    lokace = "lokace" + " = " + '"' + x.lokace + '"'
-                    poznamka = "poznamka" + " = " + '"' + x.poznamka + '"'
-                    
-                    
-                    s.sendline(f"echo {player_name} > tv.py")
-                    s.sendline(f"echo {ip_adresa_player} >> tv.py")
-                    s.sendline(f"echo {tv_name} >> tv.py")
-                    s.sendline(f"echo {ip_adresa_tv} >> tv.py")
-                    s.sendline(f"echo {lokace} >> tv.py")
-                    s.sendline(f"echo {poznamka} >> tv.py")
-                    
-                    
-                    # write out current crontab
-                    s.sendline("crontab -r")
-                    s.sendline("crontab -l > mycron")
+
+                    # player_name = f'player_name = "{x.player_name}"'
+                    # ip_adresa_player = f'ip_adresa_player = "{x.ip_adresa_player}"'
+                    # tv_name = f'tv_name = "{x.tv_name}"'
+                    # ip_adresa_tv = f'ip_adresa_tv = "{x.ip_adresa_tv}"'
+                    # lokace = f'lokace = "{x.lokace}"'
+                    # poznamka = f'poznamka = "{x.poznamka}"'
+                    #
+                    # with open("tv.py", mode="w") as tv:
+                    #     tv.write(f"{player_name}\n{ip_adresa_player}\n{tv_name}\n{ip_adresa_tv}\n{lokace}\n{poznamka}")
+                    #
+                    # s.sendline(f'echo {tv.read()} > tv.py')
+                    # tv.close()
+                    #
+                    # # write out current crontab
+                    # s.sendline("crontab -r")
+                    # s.sendline("crontab -l > mycron")
                     
                                     
                     if (x.prikaz_1 == "" or x.prikaz_1 == "-")  or (x.cas_1 == "" or x.cas_1 == "-"):
@@ -355,5 +353,5 @@ class Program():
     
 ################### PROGRAM ####################     
     
-soubor = "cron-casy.csv"       
+soubor = "Cron-casy.csv"
 program = Program(soubor)
