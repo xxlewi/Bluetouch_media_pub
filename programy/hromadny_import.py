@@ -117,7 +117,7 @@ class Program():
         textak.close
 
         for x in self.seznam_objektu:
-            if x.ip_adresa_player == "":
+            if x.ip_adresa_player == "" or x.ip_adresa_player == "-":
                 pass
             else:
                 
@@ -147,13 +147,17 @@ class Program():
                     # ip_adresa_tv = f'ip_adresa_tv = "{x.ip_adresa_tv}"'
                     # lokace = f'lokace = "{x.lokace}"'
                     # poznamka = f'poznamka = "{x.poznamka}"'
-                    #
-                    # with open("tv.py", mode="w") as tv:
+                    # #
+                    # with open("tv.txt", mode="w") as tv:
                     #     tv.write(f"{player_name}\n{ip_adresa_player}\n{tv_name}\n{ip_adresa_tv}\n{lokace}\n{poznamka}")
+                    #     tv.close()
+                    # with open("tv.txt", mode="r") as tv:
+                    #     tv_txt = tv.readline()
+                    #     # print(tv_txt)
                     #
-                    # s.sendline(f'echo {tv.read()} > tv.py')
-                    # tv.close()
-                    #
+                    #     s.sendline(f"echo {tv_txt} > tv.py")
+                    #     tv.close()
+
                     # # write out current crontab
                     # s.sendline("crontab -r")
                     # s.sendline("crontab -l > mycron")
@@ -353,5 +357,5 @@ class Program():
     
 ################### PROGRAM ####################     
     
-soubor = "Cron-casy.csv"
+soubor = "small_test.csv"
 program = Program(soubor)

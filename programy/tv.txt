@@ -1,0 +1,6 @@
+player_name = "PB5393"
+ip_adresa_player = "172.18.78.20"
+tv_name = "LG 55XS4J-B"
+ip_adresa_tv = "172.18.78.30"
+lokace = "St.Polten, Linzerstr. St.Polten"
+poznamka = "Wartha"
