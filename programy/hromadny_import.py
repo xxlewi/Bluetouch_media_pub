@@ -294,6 +294,11 @@ class Program():
                         # textak.write(f"Player_name;IP_address_player;TV_name;IP_address_tv;Location;Note;Time_1;Command_1;Time_2;Command_2;Time_3;Command_3;Time_4;Command_4;Time_5;Command_5;Time_6;Command_6;Time_7;Command_7;Time_8;Command_8;Time_9;Command_9;Time_10;Command_10;Time_11;Command_11;Time_12;Command_12;Time_13;Command_13;Time_14;Command_14;Time_15;Command_15;Time_16;Command_16;Time_17;Command_17;Time_18;Command_18;Time_19;Command_19;Time_20;Command_20;\n")
                         textak.write(f"{x.player_name};{x.ip_adresa_player};{x.tv_name};{x.ip_adresa_tv};{x.lokace};{x.poznamka};{x.cas_1};{x.prikaz_1};{x.cas_2};{x.prikaz_2};{x.cas_3};{x.prikaz_3};{x.cas_4};{x.prikaz_4};{x.cas_5};{x.prikaz_5};{x.cas_6};{x.prikaz_6};{x.cas_7};{x.prikaz_7};{x.cas_8};{x.prikaz_8};{x.cas_9};{x.prikaz_9};{x.cas_10};{x.prikaz_10};{x.cas_11};{x.prikaz_11};{x.cas_12};{x.prikaz_12};{x.cas_13};{x.prikaz_13};{x.cas_14};{x.prikaz_14};{x.cas_15};{x.prikaz_15};{x.cas_16};{x.prikaz_16};{x.cas_17};{x.prikaz_17};{x.cas_18};{x.prikaz_18};{x.cas_19};{x.prikaz_19};{x.cas_20};{x.prikaz_20};\n")         
                     textak.close
+
+                except pxssh.TIMEOUT:
+                    with open("report.csv", mode="a+") as textak:
+                        textak.write(f"{x.player_name};{x.ip_adresa_player};{x.tv_name};{x.ip_adresa_tv};{x.lokace};{x.poznamka};{x.cas_1};{x.prikaz_1};{x.cas_2};{x.prikaz_2};{x.cas_3};{x.prikaz_3};{x.cas_4};{x.prikaz_4};{x.cas_5};{x.prikaz_5};{x.cas_6};{x.prikaz_6};{x.cas_7};{x.prikaz_7};{x.cas_8};{x.prikaz_8};{x.cas_9};{x.prikaz_9};{x.cas_10};{x.prikaz_10};{x.cas_11};{x.prikaz_11};{x.cas_12};{x.prikaz_12};{x.cas_13};{x.prikaz_13};{x.cas_14};{x.prikaz_14};{x.cas_15};{x.prikaz_15};{x.cas_16};{x.prikaz_16};{x.cas_17};{x.prikaz_17};{x.cas_18};{x.prikaz_18};{x.cas_19};{x.prikaz_19};{x.cas_20};{x.prikaz_20};\n")
+                    textak.close
                 
     
     def auktualizace_rpi(self):
@@ -351,11 +356,13 @@ class Program():
                 with open("report.csv", mode="a+") as textak:
                     textak.write(f"{x.ip_adresa_player}; Chyba;\n")
                 textak.close
+
+
         
             
                     
     
 ################### PROGRAM ####################     
     
-soubor = "small_test.csv"
+soubor = "Multilight.csv"
 program = Program(soubor)
