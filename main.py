@@ -1,5 +1,5 @@
-version = "1.0.4"
-from tv import tv_ip
+version = "1.1.0"
+from tv import ip_adresa_tv
 from tv import tv_name
 import os
 import sys
@@ -11,8 +11,8 @@ from slovnik import philips
 # TODO rozdělení televizí podle vyrobce
 
 class Program:
-    def __init__(self, tv_ip, tv_name, cmd):
-        self.tv_ip = tv_ip
+    def __init__(self, ip_adresa_tv, tv_name, cmd):
+        self.ip_adresa_tv = ip_adresa_tv
         self.tv_name = tv_name
         self.cmd = cmd
 
@@ -60,7 +60,7 @@ class Program:
     ### Příkazy přímo do televize (IP)
     
     def prikaz(self, cmd_p):
-        stream = os.popen(f"echo '{cmd_p}'|xxd -r -p|nc -w 1 {self.tv_ip} 5000|xxd -ps")
+        stream = os.popen(f"echo '{cmd_p}'|xxd -r -p|nc -w 1 {self.ip_adresa_tv} 5000|xxd -ps")
         return stream.read()
 
     def tv_status_ip(self): # CMD directly to TV
@@ -111,7 +111,7 @@ class Program:
 
 command = str(sys.argv[1])
 
-tv = Program(tv_ip, tv_name, command) 
+tv = Program(ip_adresa_tv, tv_name, command) 
 
 if tv.cmd == "?" or tv.cmd == "help" or tv.cmd == "h":
     print(f"Příkazy:\ntv_on_hdmi\ntv_off_hdmi\ntv_on_ip\ntv_off_ip")
