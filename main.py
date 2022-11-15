@@ -1,6 +1,6 @@
-version = "1.0.3"
+version = "1.0.4"
 from tv import tv_ip
-from tv import tv_druh
+from tv import tv_name
 import os
 import sys
 from slovnik import philips
@@ -8,12 +8,12 @@ from slovnik import philips
 # TODO Cold start, failover, change source, picture in picture, teplota bod 7,4, seriál number, tailing, lightsensor,
 # TODO humansensor, display rotation, dealy on start (tailing), factory reset, fan speed
 # TODO Screenshot, teamviewer (android only), RS232 routing, WOL, autorestart, HDMI (onewhire = CEC, timer, Multiwindow)
-
 # TODO rozdělení televizí podle vyrobce
+
 class Program:
-    def __init__(self, tv_ip, tv_druh, cmd):
+    def __init__(self, tv_ip, tv_name, cmd):
         self.tv_ip = tv_ip
-        self.tv_druh = tv_druh
+        self.tv_name = tv_name
         self.cmd = cmd
 
     ### RPI příkazy napřímo po HDMI
@@ -111,7 +111,7 @@ class Program:
 
 command = str(sys.argv[1])
 
-tv = Program(tv_ip, tv_druh, command) 
+tv = Program(tv_ip, tv_name, command) 
 
 if tv.cmd == "?" or tv.cmd == "help" or tv.cmd == "h":
     print(f"Příkazy:\ntv_on_hdmi\ntv_off_hdmi\ntv_on_ip\ntv_off_ip")
@@ -125,4 +125,6 @@ if tv.cmd == "tv_off_ip":
     tv.tv_off_ip()
 if tv.cmd == "tv_power_saving_mode":
     tv.tv_status_power_saving_mode()
+    
+    #přidat lcd_conf
 
