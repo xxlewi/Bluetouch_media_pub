@@ -1,4 +1,4 @@
-version = "1.2.3"
+version = "1.2.4"
 from tv import ip_adresa_tv
 from tv import tv_name
 import os
@@ -153,6 +153,11 @@ class Program:
             stream = self.prikaz_philips(philips["power_saving_mode"]["message_set"]["mode_3"])
             print(stream)
 
+    def update(self):
+        print("Aktualizuji tv")
+        stream2 = os.popen('./home/pi/Bluetouch_media_pub/update.sh')
+        print(stream2.read())
+
         ############ Program ##############
 
 
@@ -163,16 +168,19 @@ tv = Program(ip_adresa_tv, tv_name, command)
 print(tv.cmd)
 
 if tv.cmd == "?" or tv.cmd == "help" or tv.cmd == "h":
-    print("prikaz_philipsy: tv_on_hdmi, tv_off_hdmi, tv_on_ip, tv_off_ip, nastav_tv")
+    print("prikaz_philipsy: tv_on_hdmi, tv_off_hdmi, nastav_tv, update")
+    # print("prikaz_philipsy: tv_on_hdmi, tv_off_hdmi, tv_on_ip, tv_off_ip, nastav_tv")
 if tv.cmd == "tv_on_hdmi":
     tv.tv_on_hdmi()
 if tv.cmd == "tv_off_hdmi":
     tv.tv_off_hdmi()
-if tv.cmd == "tv_on_ip":
-    tv.tv_on_ip()
-if tv.cmd == "tv_off_ip":
-    tv.tv_off_ip()
+# if tv.cmd == "tv_on_ip":
+#     tv.tv_on_ip()
+# if tv.cmd == "tv_off_ip":
+#     tv.tv_off_ip()
 if tv.cmd == "nastav_tv":
     tv.nastav_tv()
+if tv.cmd == "update":
+    tv.update()
 
 
