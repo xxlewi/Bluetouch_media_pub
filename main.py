@@ -155,7 +155,7 @@ class Program:
 
     def update(self):
         print("Aktualizuji tv")
-        stream2 = os.popen('./home/pi/Bluetouch_media_pub/update.sh')
+        stream2 = os.popen('./update.sh /home/pi/Bluetouch_media_pub/update.sh')
         print(stream2.read())
 
         ############ Program ##############
