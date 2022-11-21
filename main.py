@@ -1,4 +1,4 @@
-version = "1.2.2"
+version = "1.2.3"
 from tv import ip_adresa_tv
 from tv import tv_name
 import os
@@ -9,7 +9,6 @@ from slovnik import philips, lg
 # TODO Cold start, failover, change source, picture in picture, teplota bod 7,4, serial number, tailing, lightsensor,
 # TODO humansensor, display rotation, dealy on start (tailing), factory reset, fan speed
 # TODO Screenshot, teamviewer (android only), RS232 routing, WOL, autorestart, HDMI (onewhire = CEC, timer, Multiwindow)
-# TODO rozdeleni televiz podle vyrobce
 
 class Program:
     def __init__(self, ip_adresa_tv, tv_name, cmd):
@@ -132,6 +131,22 @@ class Program:
             print(stream)
 
         elif "philips" in model:
+            print("Philips - nastavuji TV")
+            stream = self.prikaz_philips(philips["power_saving_mode"]["message_set"]["mode_low"])
+            print(stream)
+            stream = self.prikaz_philips(philips["power_saving_mode"]["message_set"]["mode_3"])
+            print(stream)
+
+        else:
+            print("LG - nastavuji TV")
+            stream = self.prikaz_lg(lg["power_saving_mode"]["message_set"]["dpm_10s"])
+            print(stream)
+            stream = self.prikaz_lg(lg["power_saving_mode"]["message_set"]["pm_mode"])
+            print(stream)
+            stream = self.prikaz_lg(lg["power_saving_mode"]["message_set"]["wake_on_lan"])
+            print(stream)
+            stream = self.prikaz_lg(lg["power_saving_mode"]["message_set"]["dpm_clk_data"])
+            print(stream)
             print("Philips - nastavuji TV")
             stream = self.prikaz_philips(philips["power_saving_mode"]["message_set"]["mode_low"])
             print(stream)

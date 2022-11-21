@@ -2,6 +2,8 @@ version = "1.2.1"
 from pexpect import pxssh
 from paramiko import SSHClient
 from scp import SCPClient
+import time
+
 class Prikazy():
     def __init__(self, player_name, ip_adresa_player, tv_name, ip_adresa_tv, lokace, poznamka, 
                  cas_1, prikaz_1, cas_2, prikaz_2, cas_3, prikaz_3, cas_4, prikaz_4, cas_5, prikaz_5, cas_6, prikaz_6, cas_7, prikaz_7, cas_8, prikaz_8, cas_9, prikaz_9, cas_10,
@@ -84,8 +86,9 @@ class Program():
         self.seznam_objektu = []
         # Spoustim
         self.import_dokumentu()
-        self.nastaveni_crontabu()
+        # self.nastaveni_crontabu()
         # self.philips_mode3()
+        self.lg_power_saving()
 
     def import_dokumentu(self):
         ### Import dokumentu ###
@@ -301,6 +304,34 @@ class Program():
             else:
                 stream = f"echo '{cmd_p}'|xxd -r -p|nc -w 1 {x.ip_adresa_tv} 5000|xxd -ps"
                 print(stream)
+
+
+
+
+
+    def lg_power_saving(self):
+        dpm_10s = "fj 00 02"
+        pm_mode = "sn 00 0c 04"
+        wake_on_lan = "fw 00 01"
+        dpm_clk_data = "sn 00 0b 01"
+
+        for x in self.seznam_objektu:
+            print(f"{x.player_name} - {x.ip_adresa_tv}")
+            if x.ip_adresa_tv == "" or x.ip_adresa_tv == "-":
+                print(f"chyba - {x.player_name} - {x.ip_adresa_tv}")
+            else:
+                stream = f"echo '{dpm_10s}'|nc -w 1 {x.ip_adresa_tv} 9761"
+                print(stream)
+                time.sleep(5)
+                stream = f"echo '{pm_mode}'|nc -w 1 {x.ip_adresa_tv} 9761"
+                print(stream)
+                time.sleep(5)
+                stream = f"echo '{wake_on_lan}'|nc -w 1 {x.ip_adresa_tv} 9761"
+                print(stream)
+                time.sleep(5)
+                stream = f"echo '{dpm_clk_data}'|nc -w 1 {x.ip_adresa_tv} 9761"
+                print(stream)
+                time.sleep(5)
     def auktualizace_rpi(self):
         for x in self.seznam_objektu:
             try:
@@ -352,5 +383,5 @@ class Program():
 
 ###################################### PROGRAM ######################################
     
-soubor = "test.csv"
+soubor = "test_nastaveni.csv"
 program = Program(soubor)
