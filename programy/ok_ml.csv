@@ -1,0 +1,8 @@
+﻿Player_name;IP_address_player;TV_name;IP_address_tv;Location;Note;Time_1;Command_1;Time_2;Command_2;Time_3;Command_3;Time_4;Command_4;Time_5;Command_5;Time_6;Command_6;Time_7;Command_7;Time_8;Command_8;Time_9;Command_9;Time_10;Command_10;Time_11;Command_11;Time_12;Command_12;Time_13;Command_13;Time_14;Command_14;Time_15;Command_15;Time_16;Command_16;Time_17;Command_17;Time_18;Command_18;Time_19;Command_19;Time_20;Command_20;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+PB5702;172.18.110.20;LG 49XS4J-B;172.18.110.30;Graz, Murpark;Huberts;5 14 * * *;nastav_tv;*/15 9-18 * * 1-5;tv_on_hdmi;30 8 * * 1-5;tv_on_hdmi;*/15 9-17 * * 6;tv_on_hdmi;30 8 * * 6;tv_on_hdmi;-;tv_on_hdmi;-;tv_on_hdmi;*/15 0-7,20-23 * * 1-5;tv_off_hdmi;30 19 * * 1-5;tv_off_hdmi;*/15 0-7,18-23 * * 6;tv_off_hdmi;-;tv_off_hdmi;*/30 * * * 0;tv_off_hdmi;-;tv_off_hdmi;;;;;;;;;;;;;0 14 15 * *;update;
+PB1384;172.18.49.20;LG 55XS4J-B;172.18.49.30;Wien, Donaufelder Straße 2;Steininger;5 14 * * *;nastav_tv;*/15 5-23 * * 0-6;tv_on_hdmi;-;tv_on_hdmi;-;tv_on_hdmi;-;tv_on_hdmi;-;tv_on_hdmi;-;tv_on_hdmi;*/15 0-3 * * 0-6;tv_off_hdmi;-;tv_off_hdmi;-;tv_off_hdmi;-;tv_off_hdmi;-;tv_off_hdmi;-;tv_off_hdmi;;;;;;;;;;;;;0 14 15 * *;update;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+PB5388;172.18.47.20;Philips  55BDL3102H;172.18.389.30;Wien, R;Schiefer;5 14 * * *;nastav_tv;*/15 6-23 * * 0-6;tv_on_hdmi;-;tv_on_hdmi;-;tv_on_hdmi;-;tv_on_hdmi;-;tv_on_hdmi;-;tv_on_hdmi;*/15 0-4 * * 0-6;tv_off_hdmi;-;tv_off_hdmi;-;tv_off_hdmi;-;tv_off_hdmi;-;tv_off_hdmi;-;tv_off_hdmi;;;;;;;;;;;;;0 14 15 * *;update;

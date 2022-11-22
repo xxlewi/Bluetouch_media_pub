@@ -1,9 +1,7 @@
-version = "1.2.4"
+version = "1.2.5"
 from pexpect import pxssh
 from paramiko import SSHClient
 from scp import SCPClient
-
-
 class Prikazy():
     def __init__(self, player_name, ip_adresa_player, tv_name, ip_adresa_tv, lokace, poznamka, 
                  cas_1, prikaz_1, cas_2, prikaz_2, cas_3, prikaz_3, cas_4, prikaz_4, cas_5, prikaz_5, cas_6, prikaz_6, cas_7, prikaz_7, cas_8, prikaz_8, cas_9, prikaz_9, cas_10,
@@ -78,8 +76,6 @@ class Prikazy():
         self.cmd_18 = '"' + self.cas_18 + self.cesta_k_programu + self.prikaz_18 + '"'
         self.cmd_19 = '"' + self.cas_19 + self.cesta_k_programu + self.prikaz_19 + '"'
         self.cmd_20 = '"' + self.cas_20 + self.cesta_k_programu + self.prikaz_20 + '"'
-
-
 class Program():
     def __init__(self, cesta):
         # Seznamy
@@ -89,7 +85,6 @@ class Program():
         self.import_dokumentu()
         self.nastaveni_crontabu()
         # self.philips_mode3()
-
     def import_dokumentu(self):
         ### Import dokumentu ###
         with open(self.cesta_importovaneho_souboru) as csv: # importuje soubor
@@ -105,7 +100,6 @@ class Program():
                 
                 # naplní objekt daty ze souboru
                 self.seznam_objektu.append(objekt)  # uloží objekt do seznamu
-
     def ssh_scp_files(self, ssh_host):
         # logging.info("In ssh_scp_files()method, to copy the files to the server")
         ssh = SSHClient()
@@ -114,11 +108,10 @@ class Program():
 
         with SCPClient(ssh.get_transport()) as scp:
             scp.put("tv.py", recursive=True, remote_path="/home/pi/Bluetouch_media_pub")
-
     def nastaveni_crontabu(self):
 
         # Otevreni a prepsani souboru zahlavim
-        with open("ok_report.csv", mode="w") as textak:
+        with open("../../Piskoviste/Webscratching/ok_report.csv", mode="w") as textak:
             textak.write(
                 "Player_name;IP_address_player;TV_name;IP_address_tv;Location;Note;Time_1;Command_1;Time_2;Command_2;Time_3;Command_3;Time_4;Command_4;Time_5;Command_5;Time_6;Command_6;Time_7;Command_7;Time_8;Command_8;Time_9;Command_9;Time_10;Command_10;Time_11;Command_11;Time_12;Command_12;Time_13;Command_13;Time_14;Command_14;Time_15;Command_15;Time_16;Command_16;Time_17;Command_17;Time_18;Command_18;Time_19;Command_19;Time_20;Command_20;\n")
         textak.close()
@@ -134,7 +127,6 @@ class Program():
             if x.ip_adresa_player == "" or x.ip_adresa_player == "-":
                 pass
             else:
-
                 try:
                     # Pripojeni SSH
                     s = pxssh.pxssh()
@@ -257,10 +249,19 @@ class Program():
                     s.sendline("cat crontab -l")
                     s.sendline("rm mycron")
 
+                    ## Get info from executing
+                    COMMAND_PROMPT = r"\[PEXPECT\]\$ "
+                    # s.sendline('cat /etc/hostname')
+                    s.expect(COMMAND_PROMPT)
+                    hostname = s.before
+                    print(hostname)
+
+                    # Nastaveni opravneni
+                    s.sendline("sudo chmod +x /home/pi/Bluetouch_media_pub/update.sh")
                     # Log out
                     s.logout()
 
-                    # Vytvoreni lokalniho tv.py
+                    # Vytvoreni lokalniho tv.py.py
                     player_name = f'player_name = "{x.player_name}"'
                     ip_adresa_player = f'ip_adresa_player = "{x.ip_adresa_player}"'
                     tv_name = f'tv_name = "{x.tv_name}"'
@@ -272,13 +273,11 @@ class Program():
                         tv.write(f"{player_name}\n{ip_adresa_player}\n{tv_name}\n{ip_adresa_tv}\n{lokace}\n{poznamka}")
                         tv.close()
 
-                    # Poslani tv.py a update.shdo RPI
+                    # Poslani tv.py.py a update.shdo RPI
                     self.ssh_scp_files(x.ip_adresa_player)
-                    # Nastaveni opravneni
-                    s.sendline("sudo chmod +x update.sh")
 
                     # Log do soubotu
-                    with open("ok_report.csv", mode="a+") as textak:
+                    with open("../../Piskoviste/Webscratching/ok_report.csv", mode="a+") as textak:
                         # textak.write(f"Player_name;IP_address_player;TV_name;IP_address_tv;Location;Note;Time_1;Command_1;Time_2;Command_2;Time_3;Command_3;Time_4;Command_4;Time_5;Command_5;Time_6;Command_6;Time_7;Command_7;Time_8;Command_8;Time_9;Command_9;Time_10;Command_10;Time_11;Command_11;Time_12;Command_12;Time_13;Command_13;Time_14;Command_14;Time_15;Command_15;Time_16;Command_16;Time_17;Command_17;Time_18;Command_18;Time_19;Command_19;Time_20;Command_20;\n")
                         textak.write(
                             f"{x.player_name};{x.ip_adresa_player};{x.tv_name};{x.ip_adresa_tv};{x.lokace};{x.poznamka};{x.cas_1};{x.prikaz_1};{x.cas_2};{x.prikaz_2};{x.cas_3};{x.prikaz_3};{x.cas_4};{x.prikaz_4};{x.cas_5};{x.prikaz_5};{x.cas_6};{x.prikaz_6};{x.cas_7};{x.prikaz_7};{x.cas_8};{x.prikaz_8};{x.cas_9};{x.prikaz_9};{x.cas_10};{x.prikaz_10};{x.cas_11};{x.prikaz_11};{x.cas_12};{x.prikaz_12};{x.cas_13};{x.prikaz_13};{x.cas_14};{x.prikaz_14};{x.cas_15};{x.prikaz_15};{x.cas_16};{x.prikaz_16};{x.cas_17};{x.prikaz_17};{x.cas_18};{x.prikaz_18};{x.cas_19};{x.prikaz_19};{x.cas_20};{x.prikaz_20};\n")
@@ -294,13 +293,13 @@ class Program():
                     with open("err_report.csv", mode="a+") as textak:
                         # textak.write(f"Player_name;IP_address_player;TV_name;IP_address_tv;Location;Note;Time_1;Command_1;Time_2;Command_2;Time_3;Command_3;Time_4;Command_4;Time_5;Command_5;Time_6;Command_6;Time_7;Command_7;Time_8;Command_8;Time_9;Command_9;Time_10;Command_10;Time_11;Command_11;Time_12;Command_12;Time_13;Command_13;Time_14;Command_14;Time_15;Command_15;Time_16;Command_16;Time_17;Command_17;Time_18;Command_18;Time_19;Command_19;Time_20;Command_20;\n")
                         textak.write(
-                            f"{x.player_name};{x.ip_adresa_player};{x.tv_name};{x.ip_adresa_tv};{x.lokace};{x.poznamka};{x.cas_1};{x.prikaz_1};{x.cas_2};{x.prikaz_2};{x.cas_3};{x.prikaz_3};{x.cas_4};{x.prikaz_4};{x.cas_5};{x.prikaz_5};{x.cas_6};{x.prikaz_6};{x.cas_7};{x.prikaz_7};{x.cas_8};{x.prikaz_8};{x.cas_9};{x.prikaz_9};{x.cas_10};{x.prikaz_10};{x.cas_11};{x.prikaz_11};{x.cas_12};{x.prikaz_12};{x.cas_13};{x.prikaz_13};{x.cas_14};{x.prikaz_14};{x.cas_15};{x.prikaz_15};{x.cas_16};{x.prikaz_16};{x.cas_17};{x.prikaz_17};{x.cas_18};{x.prikaz_18};{x.cas_19};{x.prikaz_19};{x.cas_20};{x.prikaz_20};\n")
+                            f"{x.player_name};{x.ip_adresa_player};{x.tv_name};{x.ip_adresa_tv};{x.lokace};SSH failed -{x.poznamka};{x.cas_1};{x.prikaz_1};{x.cas_2};{x.prikaz_2};{x.cas_3};{x.prikaz_3};{x.cas_4};{x.prikaz_4};{x.cas_5};{x.prikaz_5};{x.cas_6};{x.prikaz_6};{x.cas_7};{x.prikaz_7};{x.cas_8};{x.prikaz_8};{x.cas_9};{x.prikaz_9};{x.cas_10};{x.prikaz_10};{x.cas_11};{x.prikaz_11};{x.cas_12};{x.prikaz_12};{x.cas_13};{x.prikaz_13};{x.cas_14};{x.prikaz_14};{x.cas_15};{x.prikaz_15};{x.cas_16};{x.prikaz_16};{x.cas_17};{x.prikaz_17};{x.cas_18};{x.prikaz_18};{x.cas_19};{x.prikaz_19};{x.cas_20};{x.prikaz_20};\n")
                     textak.close()
 
                 except pxssh.TIMEOUT:
                     with open("err_report.csv", mode="a+") as textak:
                         textak.write(
-                            f"{x.player_name};{x.ip_adresa_player};{x.tv_name};{x.ip_adresa_tv};{x.lokace};{x.poznamka};{x.cas_1};{x.prikaz_1};{x.cas_2};{x.prikaz_2};{x.cas_3};{x.prikaz_3};{x.cas_4};{x.prikaz_4};{x.cas_5};{x.prikaz_5};{x.cas_6};{x.prikaz_6};{x.cas_7};{x.prikaz_7};{x.cas_8};{x.prikaz_8};{x.cas_9};{x.prikaz_9};{x.cas_10};{x.prikaz_10};{x.cas_11};{x.prikaz_11};{x.cas_12};{x.prikaz_12};{x.cas_13};{x.prikaz_13};{x.cas_14};{x.prikaz_14};{x.cas_15};{x.prikaz_15};{x.cas_16};{x.prikaz_16};{x.cas_17};{x.prikaz_17};{x.cas_18};{x.prikaz_18};{x.cas_19};{x.prikaz_19};{x.cas_20};{x.prikaz_20};\n")
+                            f"{x.player_name};{x.ip_adresa_player};{x.tv_name};{x.ip_adresa_tv};{x.lokace};TIMEOUT- {x.poznamka};{x.cas_1};{x.prikaz_1};{x.cas_2};{x.prikaz_2};{x.cas_3};{x.prikaz_3};{x.cas_4};{x.prikaz_4};{x.cas_5};{x.prikaz_5};{x.cas_6};{x.prikaz_6};{x.cas_7};{x.prikaz_7};{x.cas_8};{x.prikaz_8};{x.cas_9};{x.prikaz_9};{x.cas_10};{x.prikaz_10};{x.cas_11};{x.prikaz_11};{x.cas_12};{x.prikaz_12};{x.cas_13};{x.prikaz_13};{x.cas_14};{x.prikaz_14};{x.cas_15};{x.prikaz_15};{x.cas_16};{x.prikaz_16};{x.cas_17};{x.prikaz_17};{x.cas_18};{x.prikaz_18};{x.cas_19};{x.prikaz_19};{x.cas_20};{x.prikaz_20};\n")
                     textak.close()
 
     def philips_mode3(self):
@@ -316,5 +315,5 @@ class Program():
 
 ###################################### PROGRAM ######################################
 
-soubor = "test.csv"
+soubor = "ok_ml.csv"
 program = Program(soubor)

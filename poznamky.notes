@@ -1,8 +1,0 @@
-git clone https://github.com/xxlewi/Bluetouch_media_pub.git
-cd Bluetouch_media_pub/ # adresář programu
-python3 main.py tv_on_hdmi #sputí program
-
-
-MODE 3 - Philips
-
-echo '060100D206D3'|xxd -r -p|nc -w 1 172.20.55.30 5000|xxd -ps

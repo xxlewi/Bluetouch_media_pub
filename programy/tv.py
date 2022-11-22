@@ -1,0 +1,6 @@
+player_name = "PB5388"
+ip_adresa_player = "172.18.47.20"
+tv_name = "Philips  55BDL3102H"
+ip_adresa_tv = "172.18.389.30"
+lokace = "Wien, R"
+poznamka = "Schiefer"
