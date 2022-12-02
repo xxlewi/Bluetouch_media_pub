@@ -1,9 +1,9 @@
-version = "1.2.4"
+version = "1.3.0"
 from tv import ip_adresa_tv
 from tv import tv_name
 import os
 import sys
-from slovnik import philips, lg
+from slovnik import tv
 
 
 # TODO Cold start, failover, change source, picture in picture, teplota bod 7,4, serial number, tailing, lightsensor,
@@ -15,6 +15,19 @@ class Program:
         self.ip_adresa_tv = ip_adresa_tv
         self.tv_name = tv_name
         self.cmd = cmd
+        self.model = self.model_name()
+
+    def model_name(self):
+        model = self.tv_name
+        model = model.strip()
+        model = model.lower()
+
+        if "samsung" in model:
+            return "samsung"
+        elif "lg" in model:
+            return "lg"
+        elif "philips" in model:
+            return "philips"
 
     ### RPI prikaz_philipsy naprimo po HDMI
     def tv_status_hdmi(self):  # On nebo Off (TV service)
@@ -29,10 +42,10 @@ class Program:
                 list.append(x)
             index += 1
         if list == Off:
-            print("Offline")
+            print("HDMI - Power is OFF")
             return False
         elif list == On:
-            print("Online")
+            print("HDMI - Power is ON")
             return True
         else:
             print(self.out_tv_status_hdmi)
@@ -59,98 +72,83 @@ class Program:
 
     ### prikaz_philipsy primo do televize (IP)
 
-    def prikaz_philips(self, cmd_p):
-        stream_s = "echo " + cmd_p + " |xxd -r -p|nc -w 1 " + self.ip_adresa_tv + " 5000|xxd -ps"
-        stream = os.popen(stream_s)
-        return stream.read()
+    def prikaz(self, cmd):
+        if self.model == "philips":
+            stream_s = "echo " + cmd + " |xxd -r -p|nc -w 1 " + self.ip_adresa_tv + " 5000|xxd -ps"  # TODO kontrola uvozovek u prikazu
+            stream = os.popen(stream_s)
+            return stream.read()
 
-    def prikaz_lg(self, cmd_p):
-        stream_s = "echo " + "'" + cmd_p + "'" + "|nc -w 1 " + self.ip_adresa_tv + " 9761"
-        stream = os.popen(stream_s)
-        return stream.read()
+        elif self.model == "lg":
+            stream_s = "echo " + "'" + cmd + "'" + "|nc -w 1 " + self.ip_adresa_tv + " 9761"
+            stream = os.popen(stream_s)
+            return stream.read()
 
     def tv_status_ip(self):  # CMD directly to TV
-        stream = self.prikaz_philips(philips["power_state"]["message_get"]["get"])
+        stream = self.prikaz(tv[self.model]["power_state"]["message_get"]["get"])
         stream = stream.strip()
-        if stream == philips["power_state"]["message_get"]["report_on"]:
-            print("Power is ON")
+        if stream.strip() == tv[self.model]["power_state"]["message_get"]["report_on"]:
+            print("IP - Power is ON")
             return True
-        elif stream == philips["power_state"]["message_get"]["report_off"]:
-            print("Power is OFF")
+        elif stream == tv[self.model]["power_state"]["message_get"]["report_off"]:
+            print("IP - Power is OFF")
             return False
         else:
             print("chyba= " + stream)
 
     def tv_on_ip(self):
         if self.tv_status_ip():
-            print("Televize již byla zapnutá")
+            print("Televize jiz byla zapnuta")
             pass
         else:
-            print("Zapínám TV")
-            self.prikaz_philips(philips["power_state"]["message_set"]["turn_on"])
+            print("Pokousim se zapnout TV")
+            self.prikaz(tv[self.model]["power_state"]["message_set"]["turn_on"])
 
     def tv_off_ip(self):
         if self.tv_status_ip():
-            self.prikaz_philips(philips["power_state"]["message_set"]["turn_off"])
-            print("Vypínám TV")
+            self.prikaz(tv[self.model]["power_state"]["message_set"]["turn_off"])
+            print("Pokousim se vypnout TV")
         else:
-            print("Televize již byla vyppnutá")
+            print("Televize jiz byla vyppnuta")
             pass
 
-    def tv_status_power_saving_mode(self):  # CMD directly to TV
-        stream = self.prikaz_philips(philips["power_saving_mode"]["message_get"]["get"])
-        print(stream)
-
-        # if stream == philips["power_state"]["message_get"]["report_on"] :
-        #     print("Power is ON")
-        #     return True
-        # elif stream == philips["power_state"]["message_get"]["report_off"]:
-        #     print("Power is OFF")
-        #     return False
-        # else:
-        #     print(f'chyba= {stream}')
-
     def nastav_tv(self):
-        '''Spravne nastaveni televize pro uspavani cronem'''
-        model = self.tv_name
-        model = model.strip()
-        model = model.lower()
 
-        if "samsung" in model:
+        if self.model == "samsung":
             print("Samsung - nic nenestavuji")
 
-        elif "lg" in model:
+        elif self.model == "lg":
             print("LG - nastavuji TV")
-            stream = self.prikaz_lg(lg["power_saving_mode"]["message_set"]["dpm_10s"])
+            stream = self.prikaz(tv["lg"]["power_saving_mode"]["message_set"]["dpm_10s"])
             print(stream)
-            stream = self.prikaz_lg(lg["power_saving_mode"]["message_set"]["pm_mode"])
+            stream = self.prikaz(tv["lg"]["power_saving_mode"]["message_set"]["pm_mode"])
             print(stream)
-            stream = self.prikaz_lg(lg["power_saving_mode"]["message_set"]["wake_on_lan"])
+            stream = self.prikaz(tv["lg"]["power_saving_mode"]["message_set"]["wake_on_lan"])
             print(stream)
-            stream = self.prikaz_lg(lg["power_saving_mode"]["message_set"]["dpm_clk_data"])
+            stream = self.prikaz(tv["lg"]["power_saving_mode"]["message_set"]["dpm_clk_data"])
             print(stream)
 
-        elif "philips" in model:
+        elif self.model == "philips":
             print("Philips - nastavuji TV")
-            stream = self.prikaz_philips(philips["power_saving_mode"]["message_set"]["mode_low"])
+            stream = self.prikaz(tv["philips"]["power_saving_mode"]["message_set"]["mode_low"])
             print(stream)
-            stream = self.prikaz_philips(philips["power_saving_mode"]["message_set"]["mode_3"])
+            stream = self.prikaz(tv["philips"]["power_saving_mode"]["message_set"]["mode_3"])
             print(stream)
 
         else:
+            # Vyzkouší všechny příkazy
             print("LG - nastavuji TV")
-            stream = self.prikaz_lg(lg["power_saving_mode"]["message_set"]["dpm_10s"])
+            stream = self.prikaz(tv["lg"]["power_saving_mode"]["message_set"]["dpm_10s"])
             print(stream)
-            stream = self.prikaz_lg(lg["power_saving_mode"]["message_set"]["pm_mode"])
+            stream = self.prikaz(tv["lg"]["power_saving_mode"]["message_set"]["pm_mode"])
             print(stream)
-            stream = self.prikaz_lg(lg["power_saving_mode"]["message_set"]["wake_on_lan"])
+            stream = self.prikaz(tv["lg"]["power_saving_mode"]["message_set"]["wake_on_lan"])
             print(stream)
-            stream = self.prikaz_lg(lg["power_saving_mode"]["message_set"]["dpm_clk_data"])
+            stream = self.prikaz(tv["lg"]["power_saving_mode"]["message_set"]["dpm_clk_data"])
             print(stream)
             print("Philips - nastavuji TV")
-            stream = self.prikaz_philips(philips["power_saving_mode"]["message_set"]["mode_low"])
+            stream = self.prikaz(tv["philips"]["power_saving_mode"]["message_set"]["mode_low"])
             print(stream)
-            stream = self.prikaz_philips(philips["power_saving_mode"]["message_set"]["mode_3"])
+            stream = self.prikaz(tv["philips"]["power_saving_mode"]["message_set"]["mode_3"])
             print(stream)
 
     def update(self):
@@ -158,29 +156,75 @@ class Program:
         stream2 = os.popen('./update.sh /home/pi/Bluetouch_media_pub/update.sh')
         print(stream2.read())
 
+    def on(self):
+
+        self.tv_on_hdmi()
+        if self.tv_status_hdmi():
+            print("HDMI ON")
+            try:
+                if self.tv_status_ip():
+                    print("TV po IP je zapnuta a kumunikuje")
+                else:
+                    self.tv_on_ip()
+
+            except:
+                print("nejaka chyba")
+
+        else:
+            self.tv_on_hdmi()
+            print("nepovedlo se, zkousim to zapnout")
+
+    def off(self):
+
+        self.tv_off_hdmi()
+        if self.tv_status_hdmi() == False:
+            print("HDMI OFF")
+            try:
+                if self.tv_status_ip() == False:
+                    print("TV po IP je vypnuta ale kumunikuje")
+                else:
+                    self.tv_off_ip()
+
+            except:
+                print("nejaka chyba")
+
+        else:
+            print("nepovedlo se")
+
+    def status(self):
+
+        self.tv_status_hdmi()
+        self.tv_status_ip()
+
         ############ Program ##############
 
 
 command = str(sys.argv[1])
 
-tv = Program(ip_adresa_tv, tv_name, command)
+prog = Program(ip_adresa_tv, tv_name, command)
 
-print(tv.cmd)
+print(prog.cmd)
 
-if tv.cmd == "?" or tv.cmd == "help" or tv.cmd == "h":
-    print("prikaz_philipsy: tv_on_hdmi, tv_off_hdmi, nastav_tv, update")
-    # print("prikaz_philipsy: tv_on_hdmi, tv_off_hdmi, tv_on_ip, tv_off_ip, nastav_tv")
-if tv.cmd == "tv_on_hdmi":
-    tv.tv_on_hdmi()
-if tv.cmd == "tv_off_hdmi":
-    tv.tv_off_hdmi()
-# if tv.cmd == "tv_on_ip":
-#     tv.tv_on_ip()
-# if tv.cmd == "tv_off_ip":
-#     tv.tv_off_ip()
-if tv.cmd == "nastav_tv":
-    tv.nastav_tv()
-if tv.cmd == "update":
-    tv.update()
+if prog.cmd == "?" or prog.cmd == "help" or prog.cmd == "h":
+    # print("prikaz_philipsy: tv_on_hdmi, tv_off_hdmi, nastav_tv, update")
+    print("prikaz_philipsy: tv_on_hdmi, tv_off_hdmi, tv_on_ip, tv_off_ip, nastav_tv, update")
+if prog.cmd == "tv_on_hdmi":
+    prog.tv_on_hdmi()
+if prog.cmd == "tv_off_hdmi":
+    prog.tv_off_hdmi()
+if prog.cmd == "tv_on_ip":
+    prog.tv_on_ip()
+if prog.cmd == "tv_off_ip":
+    prog.tv_off_ip()
+if prog.cmd == "nastav_tv":
+    prog.nastav_tv()
+if prog.cmd == "update":
+    prog.update()
+if prog.cmd == "on":
+    prog.on()
+if prog.cmd == "off":
+    prog.off()
+if prog.cmd == "status":
+    prog.status()
 
 
