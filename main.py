@@ -1,4 +1,4 @@
-version = "1.3.0"
+version = "1.3.1"
 from tv import ip_adresa_tv
 from tv import tv_name
 import os
@@ -51,22 +51,26 @@ class Program:
             print(self.out_tv_status_hdmi)
 
     def tv_on_hdmi(self):  # zapni televizi ale nejdriv zkontroluj jeji stav
-        if self.tv_status_hdmi():
-            print("pass")
+        status = self.tv_status_hdmi()
+        if status:
+            print("Televize je jiz zapnuta pres HDMI")
             print(self.out_tv_status_hdmi)
             pass
-        else:
-            print("zapinam tv")
+        
+        elif status == False:
+            print("Zapinam TV pres HDMI")
             stream2 = os.popen('tvservice -p')
             print(stream2.read())
 
     def tv_off_hdmi(self):  # vypni televizi ale nejdriv zkontroluj jeji stav
-        if self.tv_status_hdmi():
-            print("vypinamm tv")
+        status = self.tv_status_hdmi()
+        if status:
+            print("Vypinamm TV pres HDMI")
             stream2 = os.popen('tvservice -o')
             print(stream2.read())
-        else:
-            print("pass")
+            
+        elif status == False:
+            print("Televize je jiz vypnuta pres HDMI")
             print(self.out_tv_status_hdmi)
             pass
 
@@ -93,22 +97,34 @@ class Program:
             print("IP - Power is OFF")
             return False
         else:
-            print("chyba= " + stream)
+            print("Chyba: " + stream)
 
     def tv_on_ip(self):
-        if self.tv_status_ip():
-            print("Televize jiz byla zapnuta")
+        status = self.tv_status_ip()
+        if status:
+            print("Televize jiz byla zapnuta pres IP")
             pass
-        else:
+        
+        elif status == False:
             print("Pokousim se zapnout TV")
             self.prikaz(tv[self.model]["power_state"]["message_set"]["turn_on"])
+            
+        else:
+            print("Neznam stav TV po IP, ignoruji prikaz")
+            pass
 
     def tv_off_ip(self):
-        if self.tv_status_ip():
+        status = self.tv_status_ip()
+        if status:
             self.prikaz(tv[self.model]["power_state"]["message_set"]["turn_off"])
             print("Pokousim se vypnout TV")
-        else:
+            
+        elif status == False:
             print("Televize jiz byla vyppnuta")
+            pass
+                    
+        else:
+            print("Chyba, neznamy TV stav po IP, ignoruji prikaz")
             pass
 
     def nastav_tv(self):
@@ -158,38 +174,34 @@ class Program:
 
     def on(self):
 
-        self.tv_on_hdmi()
-        if self.tv_status_hdmi():
-            print("HDMI ON")
-            try:
-                if self.tv_status_ip():
-                    print("TV po IP je zapnuta a kumunikuje")
-                else:
-                    self.tv_on_ip()
-
-            except:
-                print("nejaka chyba")
-
-        else:
+        try: 
+            print("Pokousim se zapnout TV pres HDMI")
             self.tv_on_hdmi()
-            print("nepovedlo se, zkousim to zapnout")
+        except:
+            print("Nepovedlo se mi zapnout TV pres HDMI")
+            
+        try: 
+            print("Pokousim se zapnout TV po IP")
+            self.tv_on_ip()
+        except:
+            print("Nepovedlo se mi zapnout TV po IP")
+
+
 
     def off(self):
 
-        self.tv_off_hdmi()
-        if self.tv_status_hdmi() == False:
-            print("HDMI OFF")
-            try:
-                if self.tv_status_ip() == False:
-                    print("TV po IP je vypnuta ale kumunikuje")
-                else:
-                    self.tv_off_ip()
-
-            except:
-                print("nejaka chyba")
-
-        else:
-            print("nepovedlo se")
+        try: 
+            print("Pokousim se vypnout TV pres HDMI")
+            self.tv_off_hdmi()   
+        except:
+            print("Nepovedlo se mi vypnout TV pres HDMI")
+        
+        
+        try: 
+            print("Pokousim se vypnout TV po IP")
+            self.tv_off_ip()
+        except:
+            print("Nepovedlo se mi vypnout TV po IP")
 
     def status(self):
 
