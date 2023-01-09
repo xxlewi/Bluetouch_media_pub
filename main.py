@@ -1,4 +1,4 @@
-version = "1.3.1"
+version = "1.3.2"
 from tv import ip_adresa_tv
 from tv import tv_name
 import os
@@ -8,7 +8,7 @@ from slovnik import tv
 
 # TODO Cold start, failover, change source, picture in picture, teplota bod 7,4, serial number, tailing, lightsensor,
 # TODO humansensor, display rotation, dealy on start (tailing), factory reset, fan speed
-# TODO Screenshot, teamviewer (android only), RS232 routing, WOL, autorestart, HDMI (onewhire = CEC, timer, Multiwindow)
+# TODO Screenshot, teamviewer (android only), RS232 routing, autorestart, Multiwindow)
 
 class Program:
     def __init__(self, ip_adresa_tv, tv_name, cmd):
@@ -73,7 +73,7 @@ class Program:
             print("Televize je jiz vypnuta pres HDMI")
             print(self.out_tv_status_hdmi)
             pass
-
+            
     ### prikaz_philipsy primo do televize (IP)
 
     def prikaz(self, cmd):
@@ -172,7 +172,7 @@ class Program:
         stream2 = os.popen('./update.sh /home/pi/Bluetouch_media_pub/update.sh')
         print(stream2.read())
 
-    def on(self):
+    def on_force(self):
 
         try: 
             print("Pokousim se zapnout TV pres HDMI")
@@ -185,10 +185,16 @@ class Program:
             self.tv_on_ip()
         except:
             print("Nepovedlo se mi zapnout TV po IP")
+            
+        try: 
+            print("Pokousim se zapnout TV po CEC")
+            self.tv_on_cec()
+        except:
+            print("Nepovedlo se mi zapnout TV po CEC")
 
 
 
-    def off(self):
+    def off_force(self):
 
         try: 
             print("Pokousim se vypnout TV pres HDMI")
@@ -196,17 +202,64 @@ class Program:
         except:
             print("Nepovedlo se mi vypnout TV pres HDMI")
         
-        
         try: 
             print("Pokousim se vypnout TV po IP")
             self.tv_off_ip()
         except:
             print("Nepovedlo se mi vypnout TV po IP")
+            
+        try: 
+            print("Pokousim se vypnout TV po CEC")
+            self.tv_off_cec()
+        except:
+            print("Nepovedlo se mi vypnout TV po CEC")
+            
+            
+    def on(self):
+
+        try: 
+            print("Pokousim se zapnout TV pres HDMI")
+            self.tv_on_hdmi()
+        except:
+            print("Nepovedlo se mi zapnout TV pres HDMI")
+            
+
+    def off(self):
+
+        try: 
+            print("Pokousim se vypnout TV pres HDMI")
+            self.tv_off_hdmi()   
+        except:
+            print("Nepovedlo se mi vypnout TV pres HDMI")    
+            
+    ### CEC prikazy        
+            
+    def tv_on_cec(self):
+
+        try: 
+            print("Zapinamm TV pres CEC")
+            stream2 = os.popen("echo 'on 0.0.0.0' | cec-client -s -d 1")
+            print(stream2.read())
+        except:
+            print("Nepovedlo se mi zapnout TV pres CEC")
+        
+    def tv_off_cec(self):
+
+        try: 
+            print("Vypinamm TV pres CEC")
+            stream2 = os.popen("echo 'standby' 0.0.0.0 | cec-client -s -d 1")
+            print(stream2.read())
+        
+        except:
+            print("Nepovedlo se mi vypnout TV pres CEC")
+        
 
     def status(self):
 
         self.tv_status_hdmi()
         self.tv_status_ip()
+
+
 
         ############ Program ##############
 
@@ -218,8 +271,9 @@ prog = Program(ip_adresa_tv, tv_name, command)
 print(prog.cmd)
 
 if prog.cmd == "?" or prog.cmd == "help" or prog.cmd == "h":
-    # print("prikaz_philipsy: tv_on_hdmi, tv_off_hdmi, nastav_tv, update")
-    print("prikaz_philipsy: tv_on_hdmi, tv_off_hdmi, tv_on_ip, tv_off_ip, nastav_tv, update")
+    print("BTM v: " + version)
+    print("Prikazy: tv_on_hdmi, tv_off_hdmi, tv_on_ip, tv_off_ip, tv_on_cec, tv_off_cec, on, off, force_on, force_off, nastav_tv, update, status")
+    
 if prog.cmd == "tv_on_hdmi":
     prog.tv_on_hdmi()
 if prog.cmd == "tv_off_hdmi":
@@ -228,14 +282,22 @@ if prog.cmd == "tv_on_ip":
     prog.tv_on_ip()
 if prog.cmd == "tv_off_ip":
     prog.tv_off_ip()
+if prog.cmd == "tv_on_cec":
+    prog.tv_on_cec()
+if prog.cmd == "tv_off_cec":
+    prog.tv_off_cec()
 if prog.cmd == "nastav_tv":
     prog.nastav_tv()
 if prog.cmd == "update":
     prog.update()
-if prog.cmd == "on":
+if prog.cmd == "on": # nice
     prog.on()
 if prog.cmd == "off":
     prog.off()
+if prog.cmd == "on_force": # force
+    prog.on_force()
+if prog.cmd == "off_force":
+    prog.off_force()
 if prog.cmd == "status":
     prog.status()
 
