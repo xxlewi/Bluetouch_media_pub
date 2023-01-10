@@ -1,4 +1,4 @@
-version = "1.3.0"
+version = "1.3.1"
 
 tv = {
     "philips": {
@@ -30,6 +30,37 @@ tv = {
             }
         }
     },
+    
+    "samsung": {
+        "power_state": {
+            "message_get": {
+                "get": "",
+                "report_on": "", 
+                "report_off": ""
+            },
+            "message_set": {
+                "turn_on": "",
+                "turn_off": ""
+            }
+        },
+        "power_saving_mode": {
+            "message_get": {
+                "get": "",
+                "mode_1": "",
+                "mode_2": "",
+                "mode_3": "",
+                "mode_4": ""
+            },
+            "message_set": {
+                "mode_low": "",
+                "mode_1": "",
+                "mode_2": "",
+                "mode_3": "",
+                "mode_4": ""
+            }
+        }
+    },
+    
     "lg": {
         "power_state": {
             "message_get": {
