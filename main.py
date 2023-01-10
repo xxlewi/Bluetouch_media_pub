@@ -134,6 +134,7 @@ class Program:
         elif status == False:
             print("Pokousim se zapnout TV")
             self.prikaz(tv[self.model]["power_state"]["message_set"]["turn_on"])
+            pass
             
         else:
             print("Neznam stav TV po IP, ignoruji prikaz")
@@ -192,12 +193,13 @@ class Program:
     def on(self):
 
         try: 
+            print("")
             print("Pokousim se zapnout TV pres HDMI")
             self.tv_on_hdmi()
         except:
             print("Nepovedlo se mi zapnout TV pres HDMI")
             
-        time.sleep(5)
+        time.sleep(20)
             
         try: 
             print("Pokousim se zapnout TV po CEC")
@@ -205,7 +207,7 @@ class Program:
         except:
             print("Nepovedlo se mi zapnout TV po CEC")
             
-        time.sleep(5)
+        time.sleep(20)
             
         try: 
             print("Pokousim se zapnout TV po IP")
@@ -213,8 +215,9 @@ class Program:
         except:
             print("Nepovedlo se mi zapnout TV po IP")
             
-        time.sleep(5)
+        time.sleep(20)
         
+        print("")
         self.status()
         
         
@@ -224,12 +227,13 @@ class Program:
     def off(self):
 
         try: 
+            print("")
             print("Pokousim se vypnout TV pres HDMI")
             self.tv_off_hdmi()   
         except:
             print("Nepovedlo se mi vypnout TV pres HDMI")
             
-        time.sleep(5)
+        time.sleep(20)
             
         try: 
             print("Pokousim se vypnout TV po CEC")
@@ -237,7 +241,7 @@ class Program:
         except:
             print("Nepovedlo se mi vypnout TV po CEC")
             
-        time.sleep(5)
+        time.sleep(20)
         
         try: 
             print("Pokousim se vypnout TV po IP")
@@ -245,8 +249,9 @@ class Program:
         except:
             print("Nepovedlo se mi vypnout TV po IP")
             
-        time.sleep(5)
+        time.sleep(20)
         
+        print("")
         self.status()
             
 
@@ -285,7 +290,7 @@ class Program:
         print(stream2.read())
 
     def status(self):
-
+        print("Status:")
         self.tv_status_hdmi()
         self.tv_status_cec()
         self.tv_status_ip()
