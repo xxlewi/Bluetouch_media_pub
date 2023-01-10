@@ -1,9 +1,10 @@
-version = "1.3.4"
+version = "1.3.5"
 from tv import ip_adresa_tv
 from tv import tv_name
 import os
 import sys
 from slovnik import tv
+import time
 
 
 # TODO Cold start, failover, change source, picture in picture, teplota bod 7,4, serial number, tailing, lightsensor,
@@ -196,17 +197,27 @@ class Program:
         except:
             print("Nepovedlo se mi zapnout TV pres HDMI")
             
-        try: 
-            print("Pokousim se zapnout TV po IP")
-            self.tv_on_ip()
-        except:
-            print("Nepovedlo se mi zapnout TV po IP")
+        time.sleep(5)
             
         try: 
             print("Pokousim se zapnout TV po CEC")
             self.tv_on_cec()
         except:
             print("Nepovedlo se mi zapnout TV po CEC")
+            
+        time.sleep(5)
+            
+        try: 
+            print("Pokousim se zapnout TV po IP")
+            self.tv_on_ip()
+        except:
+            print("Nepovedlo se mi zapnout TV po IP")
+            
+        time.sleep(5)
+        
+        self.status()
+        
+        
 
 
 
@@ -217,6 +228,16 @@ class Program:
             self.tv_off_hdmi()   
         except:
             print("Nepovedlo se mi vypnout TV pres HDMI")
+            
+        time.sleep(5)
+            
+        try: 
+            print("Pokousim se vypnout TV po CEC")
+            self.tv_off_cec()
+        except:
+            print("Nepovedlo se mi vypnout TV po CEC")
+            
+        time.sleep(5)
         
         try: 
             print("Pokousim se vypnout TV po IP")
@@ -224,11 +245,11 @@ class Program:
         except:
             print("Nepovedlo se mi vypnout TV po IP")
             
-        try: 
-            print("Pokousim se vypnout TV po CEC")
-            self.tv_off_cec()
-        except:
-            print("Nepovedlo se mi vypnout TV po CEC")
+        time.sleep(5)
+        
+        self.status()
+            
+
             
             
 ################################### END ON/OFF TV ##################################
@@ -266,8 +287,9 @@ class Program:
     def status(self):
 
         self.tv_status_hdmi()
-        self.tv_status_ip()
         self.tv_status_cec()
+        self.tv_status_ip()
+
 
 
 
