@@ -1,6 +1,0 @@
-player_name = ""
-ip_adresa_player = ""
-tv_name = ""
-ip_adresa_tv = ""
-lokace = ""
-poznamka = ""

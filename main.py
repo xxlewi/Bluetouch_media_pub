@@ -1,4 +1,4 @@
-version = "1.3.5"
+version = "1.3.7"
 from tv import ip_adresa_tv
 from tv import tv_name
 import os
@@ -23,12 +23,14 @@ class Program:
         model = model.strip()
         model = model.lower()
 
-        if "samsung" in model:
-            return "samsung"
-        elif "lg" in model:
+        # if "samsung" in model:
+        #     return "samsung"
+        if "lg" in model:
             return "lg"
         elif "philips" in model:
             return "philips"
+        else:
+            return False
 
     ### prikaz_philipsy primo do televize (IP)
 
@@ -48,16 +50,20 @@ class Program:
 
 
     def tv_status_ip(self):  # CMD directly to TV
-        stream = self.prikaz(tv[self.model]["power_state"]["message_get"]["get"])
-        stream = stream.strip()
-        if stream.strip() == tv[self.model]["power_state"]["message_get"]["report_on"]:
-            print("IP - Power is ON")
-            return True
-        elif stream == tv[self.model]["power_state"]["message_get"]["report_off"]:
-            print("IP - Power is OFF")
-            return False
+        if self.model != False:
+            stream = self.prikaz(tv[self.model]["power_state"]["message_get"]["get"])
+            stream = stream.strip()
+            if stream.strip() == tv[self.model]["power_state"]["message_get"]["report_on"]:
+                print("IP - Power is ON")
+                return True
+            elif stream == tv[self.model]["power_state"]["message_get"]["report_off"]:
+                print("IP - Power is OFF")
+                return False
+            else:
+                print("IP - Neznam stav TV po IP")
         else:
-            print("IP - Neznam stav TV po IP")
+            print("IP - Neznamy model TV, ignoruji zjisteni statusu")
+            pass
 
     def tv_status_cec(self):  # On nebo Off (CEC)
         stream = os.popen("echo 'pow 0.0.0.0' | cec-client -s -d 1")  # stav TV
@@ -73,7 +79,7 @@ class Program:
             print("CEC - Power is OFF")
             return False
         else:
-            print("Neznam stav TV po CEC, ignoruji prikaz")
+            print("CEC - Neznam stav TV po CEC, ignoruji zjisteni statusu")
         
     def tv_status_hdmi(self):  # On nebo Off (TV service)
         stream = os.popen('tvservice -s')  # stav TV
@@ -208,6 +214,7 @@ class Program:
             print("Nepovedlo se mi zapnout TV po CEC")
             
         time.sleep(20)
+        print("")
             
         try: 
             print("Pokousim se zapnout TV po IP")
